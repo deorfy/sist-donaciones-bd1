@@ -1,4 +1,156 @@
-# sist-donaciones-bd1
+## sist-donaciones-bd1
+
+# Sistema de Gestión de Donaciones para Casas de Acogida
+
+## Descripción del Proyecto
+
+Sistema de base de datos diseñado para gestionar donaciones destinadas a casas de acogida en Santa Cruz, Bolivia. Permite administrar usuarios (donantes, beneficiarios y administradores), categorías de elementos donables, necesidades específicas de los hogares y el registro completo de donaciones.
+
+## Estructura de la Base de Datos
+
+## Tablas Principales
+
+MUNICIPIO
+
+· Id_Municipio (INTEGER, PRIMARY KEY)
+· Nombre (VARCHAR(100), NOT NULL, UNIQUE)
+
+USUARIO
+
+· Id_User (INTEGER, PRIMARY KEY)
+· Nombre (VARCHAR(100), NOT NULL)
+· Apellido (VARCHAR(100), NOT NULL)
+· Email (VARCHAR(150), NOT NULL, UNIQUE)
+· Contraseña (VARCHAR(255), NOT NULL)
+· Rol (VARCHAR(20), CHECK: 'Administrador', 'Donante', 'Beneficiario')
+· Genero (VARCHAR(20))
+· Fecha_Registro (DATE, DEFAULT: DATE('now'))
+
+DONANTE
+
+· Id_User (INTEGER, PRIMARY KEY, FOREIGN KEY → USUARIO)
+· Nombre_Organizacion (VARCHAR(150))
+· Es_Anonimo (BOOLEAN, DEFAULT: 0)
+
+BENEFICIARIO
+
+· Id_User (INTEGER, PRIMARY KEY, FOREIGN KEY → USUARIO)
+· Nombre_Organizacion (VARCHAR(150), NOT NULL)
+· Eslogan_Corto (VARCHAR(200))
+· Ruta_Imagen_Portada (VARCHAR(300))
+· Id_Municipio (INTEGER, NOT NULL, FOREIGN KEY → MUNICIPIO)
+· Direccion (VARCHAR(200))
+· Horarios (VARCHAR(150))
+· Presentacion_Hogar (TEXT)
+· Ruta_Qr_Tarjeta (VARCHAR(300))
+
+CAT_ELEMENTO
+
+· Id_CatElemento (INTEGER, PRIMARY KEY)
+· Tipo (VARCHAR(50), CHECK: 'Dinero', 'Víveres', 'Ropa', 'Medicamentos', 'Otro')
+· Descripcion (VARCHAR(200))
+· Nombre_Icono (VARCHAR(100))
+
+NECESIDAD_HOGAR
+
+· Id_User (INTEGER, FOREIGN KEY → BENEFICIARIO)
+· Id_CatElemento (INTEGER, FOREIGN KEY → CAT_ELEMENTO)
+· Descripcion_Especifica (VARCHAR(300))
+· Estado (VARCHAR(20), CHECK: 'Satisfecho', 'Moderado', 'Crítico', DEFAULT: 'Moderado')
+· Ultima_Actualizacion (DATE, DEFAULT: DATE('now'))
+· PRIMARY KEY (Id_User, Id_CatElemento)
+
+DONACION
+
+· Id_Donacion (INTEGER, PRIMARY KEY)
+· Id_Donante (INTEGER, NOT NULL, FOREIGN KEY → DONANTE)
+· Id_User_Beneficiario (INTEGER, NOT NULL)
+· Id_CatElemento (INTEGER, NOT NULL)
+· Fecha_Donacion (DATE, DEFAULT: DATE('now'))
+· Monto_O_Cantidad (DECIMAL(10,2))
+· Comentario_Donante (TEXT)
+· FOREIGN KEY (Id_User_Beneficiario, Id_CatElemento) → NECESIDAD_HOGAR
+
+Índices
+
+· idx_usuario_email: Índice en Email de USUARIO
+· idx_usuario_rol: Índice en Rol de USUARIO
+· idx_donacion_donante: Índice en Id_Donante de DONACION
+· idx_donacion_fecha: Índice en Fecha_Donacion de DONACION
+· idx_necesidad_estado: Índice en Estado de NECESIDAD_HOGAR
+
+## Datos de Prueba
+
+Municipios
+
+Santa Cruz de la Sierra, Warnes, Montero, Cotoca, La Guardia, El Torno, Portachuelo, Camiri, Yapacaní, San Ignacio de Velasco
+
+Usuarios
+
+· 1 administrador
+· 5 donantes (2 con organización, 3 personas naturales, 1 anónimo)
+· 4 beneficiarios (hogares de acogida)
+
+Categorías de Elementos
+
+· Dinero
+· Víveres
+· Ropa
+· Medicamentos
+· Otro
+
+Necesidades Registradas
+
+10 necesidades distribuidas entre los 4 hogares, con estados: Crítico, Moderado y Satisfecho.
+
+Donaciones
+
+10 donaciones registradas, incluyendo montos, fechas y comentarios de donantes.
+
+Consultas SQL Incluidas
+
+1. Listar todos los hogares beneficiarios con su municipio
+2. Mostrar las necesidades actualmente en estado "Crítico"
+3. Contar las donaciones realizadas por cada donante
+4. Listar los hogares con más necesidades en estado crítico
+5. Mostrar el historial completo de donaciones de un donante (por email)
+6. Calcular el monto total donado por categoría
+7. Listar los 5 donantes que más han aportado en dinero
+8. Mostrar hogares que NO han recibido donaciones en los últimos 30 días
+9. Calcular el total donado por cada hogar beneficiario
+10. Listar donantes anónimos y su número de donaciones
+11. Mostrar la cantidad de necesidades por estado, agrupadas por hogar
+12. Listar todas las donaciones realizadas hoy
+13. Encontrar hogares en el mismo municipio que necesitan el mismo tipo de elemento
+14. Calcular el promedio donado por categoría
+15. Listar hogares por municipio con totales de necesidades activas
+
+## Vistas
+
+V_NECESIDADES_CRITICAS
+
+Muestra las necesidades en estado crítico con información del hogar, municipio y categoría.
+
+V_HISTORIAL_DONANTE
+
+Resumen de donaciones por donante incluyendo total de donaciones y monto total aportado.
+
+V_RESUMEN_HOGAR
+
+Resumen de donaciones recibidas por hogar incluyendo total de donaciones y monto total recibido.
+
+### Tecnologías Utilizadas
+
+· SQLite
+· SQL (DDL, DML, DQL)
+
+### Autora
+
+Delgadp Teran Kalet Manre
+Materia: Base de Datos I (INF-312)
+Fecha: 30 de junio del 2026
+
+
 # Sistema de Gestión de Donaciones - Casas de Acogida (Santa Cruz, Bolivia)
 
 Este repositorio contiene el diseño lógico, la implementación del esquema físico (DDL), la inserción de datos de prueba (DML), consultas avanzadas y vistas del **Sistema de Gestión de Donaciones para Casas de Acogida** en el departamento de Santa Cruz, Bolivia.
